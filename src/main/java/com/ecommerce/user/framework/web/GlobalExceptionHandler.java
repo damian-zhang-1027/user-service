@@ -1,0 +1,69 @@
+package com.ecommerce.user.framework.web;
+
+import java.util.stream.Collectors;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import com.ecommerce.user.exception.EmailAlreadyExistsException;
+import com.ecommerce.user.exception.RoleNotFoundException;
+import com.ecommerce.user.framework.response.GlobalResponse;
+
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * Global Exception Handler.
+ * Captures exceptions and returns the standard failure response format.
+ */
+@Slf4j
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    /**
+     * Handles 400 Bad Request (Bean Validation failures).
+     */
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<GlobalResponse<Object>> handleValidationException(MethodArgumentNotValidException ex) {
+        String errorMessage = ex.getBindingResult().getFieldErrors().stream()
+                .map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
+                .collect(Collectors.joining(", "));
+
+        log.warn("Validation failed: {}", errorMessage);
+
+        GlobalResponse<Object> response = GlobalResponse.error(errorMessage);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * Handles 409 Conflict (Email already exists).
+     */
+    @ExceptionHandler(EmailAlreadyExistsException.class)
+    public ResponseEntity<GlobalResponse<Object>> handleEmailAlreadyExistsException(EmailAlreadyExistsException ex) {
+        log.warn("Registration conflict: {}", ex.getMessage());
+        GlobalResponse<Object> response = GlobalResponse.error(ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+    }
+
+    /**
+     * Handles 500 (Internal config error, e.g., required roles not in DB).
+     */
+    @ExceptionHandler(RoleNotFoundException.class)
+    public ResponseEntity<GlobalResponse<Object>> handleRoleNotFoundException(RoleNotFoundException ex) {
+        log.error("Internal configuration error: {}", ex.getMessage());
+        GlobalResponse<Object> response = GlobalResponse.error("System configuration error, please contact admin.");
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    /**
+     * Handles 500 Internal Server Error (all other uncaught exceptions).
+     */
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<GlobalResponse<Object>> handleGeneralException(Exception ex) {
+        log.error("An unexpected error occurred: {}", ex.getMessage(), ex);
+        GlobalResponse<Object> response = GlobalResponse.error("Internal server error.");
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+}
