@@ -20,6 +20,11 @@ spring:
     change-log: classpath:db/changelog/db.changelog-master.xml
     enabled: true
 
+ecommerce:
+  jwt:
+    issuer-url: ${ECOMMERCE_JWT_ISSUER_URL}
+    expiration-sec: ${ECOMMERCE_JWT_EXPIRATION_SEC}
+
 springdoc:
   api-docs:
     path: /api-docs

@@ -37,6 +37,8 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:mysql://user-db:3306/${DB_NAME}?useSSL=false&allowPublicKeyRetrieval=true
       - SPRING_DATASOURCE_USERNAME=${DB_USER}
       - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
+      - ECOMMERCE_JWT_ISSUER_URL=${ECOMMERCE_JWT_ISSUER_URL}
+      - ECOMMERCE_JWT_EXPIRATION_SEC=${ECOMMERCE_JWT_EXPIRATION_SEC}
     networks:
       - ecomm-network
 
