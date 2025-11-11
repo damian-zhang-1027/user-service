@@ -6,24 +6,24 @@
                         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
     <changeSet id="1-insert-initial-roles" author="system-dev">
-        <comment>Insert initial system roles (BUYER) as per user-service.md</comment>
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">
                 SELECT COUNT(1) FROM roles WHERE name = 'ROLE_BUYER_USER'
             </sqlCheck>
         </preConditions>
+        <comment>Insert initial system roles (BUYER) as per user-service.md</comment>
         <insert tableName="roles">
             <column name="name" value="ROLE_BUYER_USER"/>
         </insert>
     </changeSet>
 
     <changeSet id="2-insert-admin-role" author="system-dev">
-        <comment>Insert initial system roles (SELLER) as per user-service.md</comment>
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">
                 SELECT COUNT(1) FROM roles WHERE name = 'ROLE_SELLER_ADMIN'
             </sqlCheck>
         </preConditions>
+        <comment>Insert initial system roles (SELLER) as per user-service.md</comment>
         <insert tableName="roles">
             <column name="name" value="ROLE_SELLER_ADMIN"/>
         </insert>
