@@ -20,6 +20,12 @@ spring:
     change-log: classpath:db/changelog/db.changelog-master.xml
     enabled: true
 
+ecommerce:
+  security:
+    issuer-url: ${ECOMMERCE_SECURITY_ISSUER_URL}
+    client-id: ${ECOMMERCE_SECURITY_CLIENT_ID}
+    client-secret: ${ECOMMERCE_SECURITY_CLIENT_SECRET}
+
 springdoc:
   api-docs:
     path: /api-docs

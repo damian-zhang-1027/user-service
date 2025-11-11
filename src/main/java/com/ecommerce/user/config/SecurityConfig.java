@@ -34,7 +34,8 @@ public class SecurityConfig {
     }
 
     /**
-     * Configures the security filter chain.
+     * This is the "default" security filter chain for our application APIs.
+     * It handles endpoints like /api/v1/users/register.
      */
     @Bean
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
@@ -50,8 +51,8 @@ public class SecurityConfig {
                         // Allow public access to API documentation (Swagger)
                         .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/api-docs/**").permitAll()
 
-                        // All other requests must be authenticated
-                        // (This will soon include the /oauth2/token endpoint)
+                        // All other application requests (if any) must be authenticated
+                        // Note: /oauth2/token is handled by AuthorizationServerConfig's chain
                         .anyRequest().authenticated())
 
                 // Configure session management to be STATELESS
