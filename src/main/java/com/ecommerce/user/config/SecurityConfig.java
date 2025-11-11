@@ -17,9 +17,6 @@ import org.springframework.security.web.SecurityFilterChain;
  * RegistrationService.
  * 2. It defines the security policy for endpoints *within* this service,
  * e.g., permitting public access to /register and /swagger-ui.
- * 3. It will be the foundation for the OAuth2 Authorization Server
- * configuration
- * (which will protect the /oauth2/token endpoint).
  */
 @Configuration
 @EnableWebSecurity
@@ -52,7 +49,6 @@ public class SecurityConfig {
                         .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/api-docs/**").permitAll()
 
                         // All other application requests (if any) must be authenticated
-                        // Note: /oauth2/token is handled by AuthorizationServerConfig's chain
                         .anyRequest().authenticated())
 
                 // Configure session management to be STATELESS
