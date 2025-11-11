@@ -17,7 +17,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(description = "Standard API Response Format")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record GlobalResponse<T>(
-        @Schema(description = "Business status code (0=success, -1=failure)", example = "0") int ret_code,
+        @Schema(description = "Business status code (0=success, -1=failure)", example = "0") int retCode,
         @Schema(description = "Response payload") T data,
         @Schema(description = "Metadata (e.g., pagination, request ID)") Object meta,
         @Schema(description = "Error message (null on success)", example = "Email already exists") String msg) {
