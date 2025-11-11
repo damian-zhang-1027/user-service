@@ -1,0 +1,51 @@
+version: '3.9'
+
+services:
+  user-db:
+    image: mysql:8.0
+    container_name: user-db
+    ports:
+      - "3306:3306"
+    env_file: ./.env
+    environment:
+      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+    volumes:
+      - user-db-data:/var/lib/mysql
+    networks:
+      - ecomm-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "${DB_USER}", "-p${DB_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  user-service:
+    build: .
+    container_name: user-service
+    depends_on:
+      user-db:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    env_file: ./.env
+    environment:
+      - SERVER_PORT=8080
+      - SPRING_DATASOURCE_URL=jdbc:mysql://user-db:3306/${DB_NAME}?useSSL=false&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=${DB_USER}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
+      - ECOMMERCE_SECURITY_ISSUER_URL=${ECOMMERCE_SECURITY_ISSUER_URL}
+      - ECOMMERCE_SECURITY_CLIENT_ID=${ECOMMERCE_SECURITY_CLIENT_ID}
+      - ECOMMERCE_SECURITY_CLIENT_SECRET=${ECOMMERCE_SECURITY_CLIENT_SECRET}
+    networks:
+      - ecomm-network
+
+volumes:
+  user-db-data:
+
+networks:
+  ecomm-network:
+    driver: bridge
