@@ -48,7 +48,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http
-                // Disable CSRF as we will be using JWTs (stateless)
+                // Disable CSRF (we use JWT, which is stateless)
                 .csrf(AbstractHttpConfigurer::disable)
 
                 // Configure session management to be STATELESS
@@ -56,19 +56,11 @@ public class SecurityConfig {
 
                 // Define authorization rules
                 .authorizeHttpRequests(authorize -> authorize
-                        // Allow public access to Registration API
                         .requestMatchers("/api/v1/users/register").permitAll()
-
-                        // Allow public access to Login API
                         .requestMatchers("/api/v1/users/login").permitAll()
-
-                        // Allow public access to API documentation
-                        .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/api-docs/**").permitAll()
-
-                        // Allow public access to the JWKS endpoint for API Gateway
                         .requestMatchers("/.well-known/jwks.json").permitAll()
-
-                        // All other requests are denied
+                        .requestMatchers("/actuator/health", "/actuator/prometheus").permitAll()
+                        .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/api-docs/**").permitAll()
                         .anyRequest().authenticated());
 
         return http.build();
