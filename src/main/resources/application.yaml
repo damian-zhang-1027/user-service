@@ -20,6 +20,14 @@ spring:
     change-log: classpath:db/changelog/db.changelog-master.xml
     enabled: true
 
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_DEFAULT_ZONE}
+  instance:
+    # make local development also use IP (optional, but useful in mixed environments)
+    prefer-ip-address: true
+
 ecommerce:
   jwt:
     issuer-url: ${ECOMMERCE_JWT_ISSUER_URL}
