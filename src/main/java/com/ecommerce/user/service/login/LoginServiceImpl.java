@@ -1,6 +1,7 @@
 package com.ecommerce.user.service.login;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.security.authentication.AuthenticationManager;
@@ -59,9 +60,9 @@ public class LoginServiceImpl implements LoginService {
         long expiryInSeconds = jwtProperties.expirationSec();
 
         // Get authorities (roles) as a space-separated string
-        String authorities = securityUser.getAuthorities().stream()
+        List<String> authorities = securityUser.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(" "));
+                .collect(Collectors.toList());
 
         String userId = securityUser.getUser().getId().toString();
 
